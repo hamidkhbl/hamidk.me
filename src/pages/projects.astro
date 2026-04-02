@@ -1,0 +1,97 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const projects = [
+  {
+    title: 'Selenium Automation Framework',
+    description: 'A scalable Page Object Model framework built in Java with TestNG. Features include parallel execution, Allure reporting, retry logic, and Jenkins CI integration.',
+    tags: ['Java', 'Selenium', 'TestNG', 'Allure', 'Jenkins'],
+    github: 'https://github.com/',
+    demo: null,
+    status: 'active',
+  },
+  {
+    title: 'API Testing Suite',
+    description: 'Contract-driven REST API test suite using Python and Pytest. Covers authentication flows, schema validation, error handling, and performance benchmarks.',
+    tags: ['Python', 'Pytest', 'REST Assured', 'Postman'],
+    github: 'https://github.com/',
+    demo: null,
+    status: 'active',
+  },
+  {
+    title: 'Playwright E2E Framework',
+    description: 'End-to-end test automation using Playwright with TypeScript. Includes visual regression testing, multi-browser support, and GitHub Actions integration.',
+    tags: ['TypeScript', 'Playwright', 'GitHub Actions'],
+    github: 'https://github.com/',
+    demo: null,
+    status: 'active',
+  },
+  {
+    title: 'Performance Test Harness',
+    description: 'Load and stress testing scripts using k6 for microservices. Generates metrics dashboards and integrates with Grafana for real-time monitoring.',
+    tags: ['k6', 'JavaScript', 'Grafana', 'Docker'],
+    github: 'https://github.com/',
+    demo: null,
+    status: 'archived',
+  },
+];
+---
+
+<Layout title="Projects" description="QA and automation projects by Hamid Khodabandehloo">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 py-12">
+    <p class="font-mono text-sm mb-2" style="color: var(--accent)">
+      <span style="color: var(--accent-2)">$</span> ls ./projects
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-4" style="color: var(--text)">Projects</h1>
+    <p class="text-base mb-12" style="color: var(--text-muted)">
+      Automation frameworks, testing tools, and quality engineering experiments.
+    </p>
+
+    <div class="grid sm:grid-cols-2 gap-5">
+      {projects.map(project => (
+        <div class="group flex flex-col p-5 rounded-lg border transition-colors hover:border-[var(--accent)]" style="background: var(--surface); border-color: var(--border)">
+          <div class="flex items-start justify-between mb-3">
+            <h2 class="font-mono font-semibold text-sm" style="color: var(--text)">{project.title}</h2>
+            <span
+              class="text-xs font-mono px-2 py-0.5 rounded-full"
+              style={project.status === 'active'
+                ? 'background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent)'
+                : 'background: var(--surface-2); color: var(--text-muted)'}
+            >
+              {project.status}
+            </span>
+          </div>
+
+          <p class="text-sm leading-relaxed mb-4 flex-1" style="color: var(--text-muted)">
+            {project.description}
+          </p>
+
+          <div class="flex flex-wrap gap-1.5 mb-4">
+            {project.tags.map(tag => (
+              <span class="text-xs font-mono px-2 py-0.5 rounded" style="background: var(--surface-2); color: var(--text-muted)">{tag}</span>
+            ))}
+          </div>
+
+          <div class="flex items-center gap-3 pt-3 border-t" style="border-color: var(--border)">
+            {project.github && (
+              <a href={project.github} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono transition-opacity hover:opacity-80" style="color: var(--text-muted)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/>
+                </svg>
+                source
+              </a>
+            )}
+            {project.demo && (
+              <a href={project.demo} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-mono transition-opacity hover:opacity-80" style="color: var(--accent)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14 21 3"/>
+                </svg>
+                live demo
+              </a>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>

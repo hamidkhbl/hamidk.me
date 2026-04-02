@@ -1,0 +1,84 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+}
+
+const { title, description, pubDate, updatedDate, tags = [] } = Astro.props;
+
+const formattedPub = pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const formattedUpd = updatedDate?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Layout title={title} description={description}>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <a href="/blog" class="inline-flex items-center gap-2 text-sm font-mono mb-8 transition-opacity hover:opacity-80" style="color: var(--text-muted)">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m15 18-6-6 6-6"/>
+      </svg>
+      back to blog
+    </a>
+
+    <header class="mb-10">
+      <div class="flex flex-wrap gap-2 mb-4">
+        {tags.map(tag => (
+          <span class="text-xs font-mono px-2 py-0.5 rounded border" style="color: var(--accent-2); border-color: var(--accent-2); background: color-mix(in srgb, var(--accent-2) 10%, transparent)">
+            #{tag}
+          </span>
+        ))}
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl font-bold mb-4 leading-tight" style="color: var(--text)">
+        {title}
+      </h1>
+
+      <p class="text-base mb-4" style="color: var(--text-muted)">{description}</p>
+
+      <div class="flex items-center gap-4 text-sm font-mono" style="color: var(--text-muted)">
+        <time datetime={pubDate.toISOString()}>
+          {formattedPub}
+        </time>
+        {updatedDate && (
+          <span>
+            updated: <time datetime={updatedDate.toISOString()}>{formattedUpd}</time>
+          </span>
+        )}
+      </div>
+    </header>
+
+    <hr style="border-color: var(--border)" class="mb-10" />
+
+    <article class="prose">
+      <slot />
+    </article>
+
+    <hr style="border-color: var(--border)" class="mt-12 mb-8" />
+
+    <!-- Giscus comments placeholder — add your repo config to activate -->
+    <div id="giscus-container">
+      <p class="text-sm font-mono mb-4" style="color: var(--text-muted)">// comments</p>
+      <script
+        src="https://giscus.app/client.js"
+        data-repo="YOUR_GITHUB_USERNAME/YOUR_REPO"
+        data-repo-id="YOUR_REPO_ID"
+        data-category="Blog Comments"
+        data-category-id="YOUR_CATEGORY_ID"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="top"
+        data-theme="dark"
+        data-lang="en"
+        data-loading="lazy"
+        crossorigin="anonymous"
+        async
+      ></script>
+    </div>
+  </div>
+</Layout>

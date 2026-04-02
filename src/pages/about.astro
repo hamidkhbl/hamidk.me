@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="About" description="About Hamid Khodabandehloo — QA Engineer & SDET">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <p class="font-mono text-sm mb-2" style="color: var(--accent)">
+      <span style="color: var(--accent-2)">$</span> cat about.md
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-10" style="color: var(--text)">About me</h1>
+
+    <!-- Bio -->
+    <div class="mb-12">
+      <p class="text-base leading-relaxed mb-4" style="color: var(--text-muted)">
+        I'm Hamid — a QA Engineer and SDET with a passion for building robust automation frameworks and
+        fostering a culture of quality within engineering teams. I believe testing isn't just about finding
+        bugs; it's about building confidence in the software we ship.
+      </p>
+      <p class="text-base leading-relaxed" style="color: var(--text-muted)">
+        When I'm not writing test code, I'm writing about it — exploring topics like test architecture,
+        shift-left testing, performance engineering, and the tools that make QA teams more effective.
+      </p>
+    </div>
+
+    <!-- Skills -->
+    <div class="mb-12">
+      <h2 class="text-lg font-bold font-mono mb-6" style="color: var(--text)">
+        <span style="color: var(--accent)">//</span> skills
+      </h2>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        {[
+          {
+            category: 'Test Automation',
+            skills: ['Selenium WebDriver', 'Playwright', 'Cypress', 'Appium', 'TestNG', 'JUnit'],
+          },
+          {
+            category: 'Languages',
+            skills: ['Java', 'Python', 'TypeScript', 'JavaScript', 'Bash'],
+          },
+          {
+            category: 'API & Performance',
+            skills: ['REST Assured', 'Postman', 'Pytest', 'JMeter', 'k6', 'WireMock'],
+          },
+          {
+            category: 'DevOps & Tools',
+            skills: ['Docker', 'GitHub Actions', 'Jenkins', 'Git', 'JIRA', 'Allure'],
+          },
+        ].map(group => (
+          <div class="p-4 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
+            <h3 class="font-mono text-xs uppercase tracking-wider mb-3" style="color: var(--accent)">{group.category}</h3>
+            <div class="flex flex-wrap gap-2">
+              {group.skills.map(skill => (
+                <span class="text-xs font-mono px-2 py-1 rounded" style="background: var(--surface-2); color: var(--text-muted)">{skill}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Experience -->
+    <div class="mb-12">
+      <h2 class="text-lg font-bold font-mono mb-6" style="color: var(--text)">
+        <span style="color: var(--accent)">//</span> experience
+      </h2>
+
+      <div class="space-y-6 relative">
+        <div class="absolute left-0 top-0 bottom-0 w-px" style="background: var(--border); margin-left: 7px;"></div>
+
+        {[
+          {
+            role: 'Senior SDET',
+            company: 'Company Name',
+            period: '2022 — present',
+            points: [
+              'Led test automation strategy across 3 product teams',
+              'Built Playwright E2E suite covering 200+ test scenarios',
+              'Reduced regression cycle time by 60% through parallelization',
+            ],
+          },
+          {
+            role: 'QA Engineer',
+            company: 'Company Name',
+            period: '2019 — 2022',
+            points: [
+              'Designed API test framework using Python + Pytest',
+              'Integrated automated tests into CI/CD pipelines',
+              'Mentored junior QA engineers on best practices',
+            ],
+          },
+        ].map(job => (
+          <div class="pl-6 relative">
+            <div class="absolute left-0 w-3.5 h-3.5 rounded-full border-2 top-1" style="background: var(--bg); border-color: var(--accent)"></div>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-1 mb-2">
+              <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">{job.role}</h3>
+              <span class="hidden sm:inline" style="color: var(--border)">—</span>
+              <span class="text-sm" style="color: var(--text-muted)">{job.company}</span>
+              <span class="text-xs font-mono ml-auto" style="color: var(--accent)">{job.period}</span>
+            </div>
+            <ul class="space-y-1">
+              {job.points.map(point => (
+                <li class="text-sm flex gap-2" style="color: var(--text-muted)">
+                  <span style="color: var(--accent-2)">›</span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="p-5 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
+      <h2 class="font-mono font-semibold text-sm mb-3" style="color: var(--accent)">// get in touch</h2>
+      <p class="text-sm mb-4" style="color: var(--text-muted)">
+        Open to interesting conversations about quality engineering, tooling, and team culture.
+      </p>
+      <a href="mailto:your@email.com" class="inline-flex items-center gap-2 text-sm font-mono transition-opacity hover:opacity-80" style="color: var(--accent)">
+        your@email.com →
+      </a>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Resume" description="Resume of Hamid Khodabandehloo — QA Engineer & SDET">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+    <div class="flex items-start justify-between flex-wrap gap-4 mb-10">
+      <div>
+        <p class="font-mono text-sm mb-2" style="color: var(--accent)">
+          <span style="color: var(--accent-2)">$</span> open resume.pdf
+        </p>
+        <h1 class="text-3xl sm:text-4xl font-bold" style="color: var(--text)">Resume</h1>
+      </div>
+      <a
+        href="/resume.pdf"
+        download
+        class="inline-flex items-center gap-2 px-4 py-2 rounded-md font-mono text-sm font-semibold border transition-colors hover:border-[var(--accent)]"
+        style="border-color: var(--border); color: var(--text-muted)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        download PDF
+      </a>
+    </div>
+
+    <!-- Header -->
+    <div class="p-6 rounded-lg border mb-6" style="background: var(--surface); border-color: var(--border)">
+      <h2 class="text-xl font-bold font-mono mb-1" style="color: var(--text)">Hamid Khodabandehloo</h2>
+      <p class="font-mono text-sm mb-3" style="color: var(--accent)">QA Engineer & SDET</p>
+      <div class="flex flex-wrap gap-4 text-sm font-mono" style="color: var(--text-muted)">
+        <a href="mailto:your@email.com" class="hover:opacity-80 transition-opacity">your@email.com</a>
+        <a href="https://linkedin.com/in/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">linkedin</a>
+        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">github</a>
+      </div>
+    </div>
+
+    <!-- Summary -->
+    <section class="mb-8">
+      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
+        Summary
+      </h2>
+      <p class="text-sm leading-relaxed" style="color: var(--text-muted)">
+        QA Engineer and SDET with experience building automation frameworks from the ground up, integrating
+        tests into CI/CD pipelines, and driving quality culture across engineering teams. Proficient in
+        Selenium, Playwright, Pytest, and REST API testing.
+      </p>
+    </section>
+
+    <!-- Experience -->
+    <section class="mb-8">
+      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
+        Experience
+      </h2>
+
+      <div class="space-y-6">
+        {[
+          {
+            role: 'Senior SDET',
+            company: 'Company Name',
+            location: 'City, Country',
+            period: '2022 — Present',
+            points: [
+              'Led test automation strategy across 3 product teams, reducing manual testing by 70%',
+              'Built Playwright E2E framework covering 200+ user journey scenarios',
+              'Reduced regression cycle time by 60% through parallelization and smart test selection',
+              'Mentored 4 junior QA engineers; introduced shift-left testing practices',
+            ],
+          },
+          {
+            role: 'QA Engineer',
+            company: 'Company Name',
+            location: 'City, Country',
+            period: '2019 — 2022',
+            points: [
+              'Designed and implemented REST API test framework using Python + Pytest',
+              'Integrated automated test suites into Jenkins CI/CD pipelines',
+              'Developed test plans and maintained 500+ test cases in JIRA/Zephyr',
+              'Performed performance testing using JMeter for high-traffic endpoints',
+            ],
+          },
+        ].map(job => (
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
+              <div>
+                <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">{job.role}</h3>
+                <p class="text-sm" style="color: var(--text-muted)">{job.company} · {job.location}</p>
+              </div>
+              <span class="text-xs font-mono" style="color: var(--accent)">{job.period}</span>
+            </div>
+            <ul class="space-y-1.5">
+              {job.points.map(point => (
+                <li class="text-sm flex gap-2" style="color: var(--text-muted)">
+                  <span class="shrink-0" style="color: var(--accent-2)">›</span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section class="mb-8">
+      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
+        Skills
+      </h2>
+
+      <div class="space-y-3">
+        {[
+          { label: 'Test Automation', value: 'Selenium, Playwright, Cypress, Appium' },
+          { label: 'Languages', value: 'Java, Python, TypeScript, JavaScript' },
+          { label: 'API Testing', value: 'REST Assured, Pytest, Postman, WireMock' },
+          { label: 'Performance', value: 'JMeter, k6, Gatling' },
+          { label: 'CI/CD & DevOps', value: 'GitHub Actions, Jenkins, Docker, Git' },
+          { label: 'Reporting', value: 'Allure, ExtentReports, HTML Reporter' },
+        ].map(skill => (
+          <div class="flex gap-4">
+            <span class="text-xs font-mono w-32 shrink-0 pt-0.5" style="color: var(--accent)">{skill.label}</span>
+            <span class="text-sm" style="color: var(--text-muted)">{skill.value}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
+        Education
+      </h2>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+        <div>
+          <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">Bachelor's in Computer Science</h3>
+          <p class="text-sm" style="color: var(--text-muted)">University Name</p>
+        </div>
+        <span class="text-xs font-mono" style="color: var(--accent)">Year</span>
+      </div>
+    </section>
+  </div>
+</Layout>
