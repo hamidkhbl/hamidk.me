@@ -209,9 +209,20 @@ const tracks = [
                     {entry.startY}/{String(entry.startM).padStart(2,'0')} → {entry.endY}/{String(entry.endM).padStart(2,'0')}
                   </span>
                 </div>
-                <div class="flex items-center gap-3">
+                <div class="flex items-center gap-3 flex-wrap">
                   <p class="text-sm" style="color: var(--text-muted)">{entry.company}</p>
                   <span class="text-xs font-mono px-1.5 py-0.5 rounded" style="background: var(--surface); color: var(--text-muted); border: 1px solid var(--border)">{duration}</span>
+                  {entry.company === 'University of Saskatchewan' && (
+                    <a
+                      href="https://harvest.usask.ca/items/e2014b11-2511-4742-8bfb-225b71361633"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-xs font-mono transition-opacity hover:opacity-80"
+                      style="color: var(--accent-2)"
+                    >
+                      thesis →
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
