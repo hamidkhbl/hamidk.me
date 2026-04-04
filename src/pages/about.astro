@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="About" description="About Hamid Khodabandehloo — QA Engineer & SDET">
+<Layout title="About" description="About Hamid Khodabandehloo — Senior Software Engineer in Test">
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
     <p class="font-mono text-sm mb-2" style="color: var(--accent)">
       <span style="color: var(--accent-2)">$</span> cat about.md
@@ -12,13 +12,18 @@ import Layout from '../layouts/Layout.astro';
     <!-- Bio -->
     <div class="mb-12">
       <p class="text-base leading-relaxed mb-4" style="color: var(--text-muted)">
-        I'm Hamid — a QA Engineer and SDET with a passion for building robust automation frameworks and
-        fostering a culture of quality within engineering teams. I believe testing isn't just about finding
-        bugs; it's about building confidence in the software we ship.
+        I'm Hamid — a Senior Software Engineer in Test based in Vancouver, BC, with 10+ years of experience
+        building automation frameworks for cloud-native and distributed systems. I've worked at companies like
+        Fortinet and Dropbox, where I led quality engineering efforts across UI, API, and backend layers.
+      </p>
+      <p class="text-base leading-relaxed mb-4" style="color: var(--text-muted)">
+        My Master's research at the University of Saskatchewan focused on automated testing for legacy system
+        re-engineering, resulting in an IEEE-published paper and a nomination for the best thesis award.
       </p>
       <p class="text-base leading-relaxed" style="color: var(--text-muted)">
-        When I'm not writing test code, I'm writing about it — exploring topics like test architecture,
-        shift-left testing, performance engineering, and the tools that make QA teams more effective.
+        I believe quality engineering is a team sport — not a gate at the end of a sprint. I write about test
+        strategy, automation architecture, shift-left practices, and the tools that make QA teams faster and
+        more effective.
       </p>
     </div>
 
@@ -31,20 +36,28 @@ import Layout from '../layouts/Layout.astro';
       <div class="grid sm:grid-cols-2 gap-4">
         {[
           {
-            category: 'Test Automation',
-            skills: ['Selenium WebDriver', 'Playwright', 'Cypress', 'Appium', 'TestNG', 'JUnit'],
+            category: 'Automation',
+            skills: ['Python', 'Java', 'C#', 'Selenium', 'Playwright', 'PyTest', 'RestAssured', 'Shell scripting'],
           },
           {
-            category: 'Languages',
-            skills: ['Java', 'Python', 'TypeScript', 'JavaScript', 'Bash'],
+            category: 'API & Security',
+            skills: ['Postman', 'Burp Suite', 'JMeter', 'REST/JSON'],
           },
           {
-            category: 'API & Performance',
-            skills: ['REST Assured', 'Postman', 'Pytest', 'JMeter', 'k6', 'WireMock'],
+            category: 'Observability',
+            skills: ['Graylog', 'Allure Reports', 'Extent Reports', 'Log analysis'],
           },
           {
-            category: 'DevOps & Tools',
-            skills: ['Docker', 'GitHub Actions', 'Jenkins', 'Git', 'JIRA', 'Allure'],
+            category: 'Data',
+            skills: ['SQL', 'Oracle', 'Pandas', 'Kafka', 'Jupyter Notebook'],
+          },
+          {
+            category: 'CI/CD & DevOps',
+            skills: ['Jenkins', 'Docker', 'Git', 'TestRail', 'Jira', 'VS Code'],
+          },
+          {
+            category: 'Platforms',
+            skills: ['Linux', 'macOS', 'Windows', 'iOS', 'Android'],
           },
         ].map(group => (
           <div class="p-4 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
@@ -59,55 +72,29 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-    <!-- Experience -->
+    <!-- IEEE paper -->
     <div class="mb-12">
       <h2 class="text-lg font-bold font-mono mb-6" style="color: var(--text)">
-        <span style="color: var(--accent)">//</span> experience
+        <span style="color: var(--accent)">//</span> research
       </h2>
-
-      <div class="space-y-6 relative">
-        <div class="absolute left-0 top-0 bottom-0 w-px" style="background: var(--border); margin-left: 7px;"></div>
-
-        {[
-          {
-            role: 'Senior SDET',
-            company: 'Company Name',
-            period: '2022 — present',
-            points: [
-              'Led test automation strategy across 3 product teams',
-              'Built Playwright E2E suite covering 200+ test scenarios',
-              'Reduced regression cycle time by 60% through parallelization',
-            ],
-          },
-          {
-            role: 'QA Engineer',
-            company: 'Company Name',
-            period: '2019 — 2022',
-            points: [
-              'Designed API test framework using Python + Pytest',
-              'Integrated automated tests into CI/CD pipelines',
-              'Mentored junior QA engineers on best practices',
-            ],
-          },
-        ].map(job => (
-          <div class="pl-6 relative">
-            <div class="absolute left-0 w-3.5 h-3.5 rounded-full border-2 top-1" style="background: var(--bg); border-color: var(--accent)"></div>
-            <div class="flex flex-col sm:flex-row sm:items-center gap-1 mb-2">
-              <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">{job.role}</h3>
-              <span class="hidden sm:inline" style="color: var(--border)">—</span>
-              <span class="text-sm" style="color: var(--text-muted)">{job.company}</span>
-              <span class="text-xs font-mono ml-auto" style="color: var(--accent)">{job.period}</span>
-            </div>
-            <ul class="space-y-1">
-              {job.points.map(point => (
-                <li class="text-sm flex gap-2" style="color: var(--text-muted)">
-                  <span style="color: var(--accent-2)">›</span>
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <div class="p-5 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
+        <p class="text-xs font-mono uppercase tracking-wider mb-2" style="color: var(--accent-2)">IEEE SANER 2021</p>
+        <p class="text-sm font-semibold mb-2" style="color: var(--text)">
+          A testing approach while re-engineering legacy systems: An industrial case study
+        </p>
+        <p class="text-sm mb-3" style="color: var(--text-muted)">
+          Khodabandehloo, H., Roy, B., Mondal, M., Roy, C., &amp; Schneider, K. (2021).
+          <em>2021 IEEE International Conference on Software Analysis, Evolution and Reengineering (SANER)</em>, pp. 600–604.
+        </p>
+        <a
+          href="https://doi.org/10.1109/SANER50967.2021.00073"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-sm font-mono transition-opacity hover:opacity-80"
+          style="color: var(--accent)"
+        >
+          doi:10.1109/SANER50967.2021.00073 →
+        </a>
       </div>
     </div>
 
@@ -115,11 +102,23 @@ import Layout from '../layouts/Layout.astro';
     <div class="p-5 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
       <h2 class="font-mono font-semibold text-sm mb-3" style="color: var(--accent)">// get in touch</h2>
       <p class="text-sm mb-4" style="color: var(--text-muted)">
-        Open to interesting conversations about quality engineering, tooling, and team culture.
+        Open to conversations about quality engineering, test architecture, and team culture.
       </p>
-      <a href="mailto:your@email.com" class="inline-flex items-center gap-2 text-sm font-mono transition-opacity hover:opacity-80" style="color: var(--accent)">
-        your@email.com →
-      </a>
+      <div class="flex flex-wrap items-center gap-5">
+        <a href="mailto:hamidkhbl@gmail.com" class="inline-flex items-center gap-2 text-sm font-mono transition-opacity hover:opacity-80" style="color: var(--accent)">
+          hamidkhbl@gmail.com →
+        </a>
+        <a href="https://linkedin.com/in/hamidkhbl" target="_blank" rel="noopener noreferrer" class="transition-opacity hover:opacity-80" style="color: var(--text-muted)" aria-label="LinkedIn">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <a href="https://github.com/hamidkhbl" target="_blank" rel="noopener noreferrer" class="transition-opacity hover:opacity-80" style="color: var(--text-muted)" aria-label="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844a9.59 9.59 0 0 1 2.504.337c1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </Layout>
