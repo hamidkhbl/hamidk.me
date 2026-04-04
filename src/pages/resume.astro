@@ -56,8 +56,8 @@ const tracks = [
     <h1 class="text-3xl sm:text-4xl font-bold mb-2" style="color: var(--text)">Career Timeline</h1>
     <p class="text-sm mb-12 font-mono" style="color: var(--text-muted)">10+ years · Vancouver, BC</p>
 
-    <!-- Gantt chart -->
-    <div class="overflow-x-auto pb-4">
+    <!-- Gantt chart — desktop only -->
+    <div class="hidden md:block overflow-x-auto pb-4">
       <div class="min-w-[640px]">
 
         <!-- Year ruler -->
@@ -143,7 +143,7 @@ const tracks = [
     </div>
 
     <!-- Entry list -->
-    <div class="mt-16">
+    <div class="mt-8 md:mt-16">
       <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-6 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
         // full history
       </h2>

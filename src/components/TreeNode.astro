@@ -28,7 +28,7 @@ const open = isAncestor || defaultOpen || depth === 0;
 <li class="tree-node" data-path={node.path}>
   <!-- Category label (clickable to expand/collapse) -->
   <button
-    class="tree-category flex items-center gap-1.5 w-full text-left py-1 px-2 rounded-md transition-colors hover:bg-[var(--surface-2)] group"
+    class="tree-category flex items-center gap-1.5 w-full text-left py-1.5 px-2 rounded-md transition-colors hover:bg-[var(--surface-2)] group min-h-[2rem]"
     data-target={nodeId}
     aria-expanded={open ? "true" : "false"}
   >
@@ -60,7 +60,7 @@ const open = isAncestor || defaultOpen || depth === 0;
   <div
     id={nodeId}
     class={`tree-children overflow-hidden transition-all duration-200 ${open ? '' : 'hidden'}`}
-    style={`padding-left: ${depth === 0 ? 1 : 1.25}rem`}
+    style={`padding-left: ${depth === 0 ? 0.75 : 1}rem`}
   >
     <!-- Posts in this node -->
     {hasPosts && (
@@ -71,7 +71,7 @@ const open = isAncestor || defaultOpen || depth === 0;
             <li>
               <a
                 href={`/blog/${post.id}`}
-                class="flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-mono transition-colors hover:bg-[var(--surface-2)] leading-snug"
+                class="flex items-center gap-1.5 py-1.5 px-2 rounded-md text-xs font-mono transition-colors hover:bg-[var(--surface-2)] leading-snug min-h-[2rem]"
                 style={isActive
                   ? 'color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent)'
                   : 'color: var(--text-muted)'}

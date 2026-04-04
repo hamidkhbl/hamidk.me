@@ -14,7 +14,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     </p>
     <h1 class="text-3xl sm:text-4xl font-bold mb-10" style="color: var(--text)">Blog</h1>
 
-    <div class="flex gap-8">
+    <div class="flex gap-8 items-start">
       <!-- Tree sidebar -->
       <aside class="hidden md:block w-56 shrink-0">
         <div class="sticky top-20 p-3 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
@@ -24,6 +24,18 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 
       <!-- Post list -->
       <div class="flex-1 min-w-0">
+        <!-- Mobile topics toggle -->
+        <div class="md:hidden mb-4">
+          <button id="mobile-topics-btn" class="w-full flex items-center justify-between px-4 py-2.5 rounded-lg border font-mono text-sm transition-colors" style="background: var(--surface); border-color: var(--border); color: var(--text-muted)">
+            <span>topics</span>
+            <svg id="mobile-topics-chevron" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          <div id="mobile-topics-panel" class="hidden mt-2 p-3 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
+            <BlogTree />
+          </div>
+        </div>
         {posts.length === 0 ? (
           <div class="py-20">
             <p class="font-mono text-sm" style="color: var(--text-muted)">// no posts yet — check back soon</p>
@@ -63,3 +75,14 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     </div>
   </div>
 </Layout>
+
+<script>
+  const btn = document.getElementById('mobile-topics-btn');
+  const panel = document.getElementById('mobile-topics-panel');
+  const chevron = document.getElementById('mobile-topics-chevron');
+  btn?.addEventListener('click', () => {
+    const open = !panel!.classList.contains('hidden');
+    panel!.classList.toggle('hidden', open);
+    chevron!.classList.toggle('rotate-180', !open);
+  });
+</script>
