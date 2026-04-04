@@ -1,141 +1,223 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+// Timeline bounds: Jan 2012 → Jul 2026
+const TOTAL_START = { year: 2012, month: 1 };
+const TOTAL_END   = { year: 2026, month: 7 };
+
+function toMonths(year: number, month: number) {
+  return (year - TOTAL_START.year) * 12 + (month - TOTAL_START.month);
+}
+
+const TOTAL_MONTHS = toMonths(TOTAL_END.year, TOTAL_END.month);
+
+function pct(year: number, month: number) {
+  return (toMonths(year, month) / TOTAL_MONTHS * 100).toFixed(3) + '%';
+}
+function span(startY: number, startM: number, endY: number, endM: number) {
+  return ((toMonths(endY, endM) - toMonths(startY, startM)) / TOTAL_MONTHS * 100).toFixed(3) + '%';
+}
+
+// Year markers
+const years = Array.from({ length: TOTAL_END.year - TOTAL_START.year + 1 }, (_, i) => TOTAL_START.year + i);
+
+// Tracks
+const tracks = [
+  {
+    label: 'Industry',
+    color: 'var(--accent)',
+    colorBg: 'color-mix(in srgb, var(--accent) 18%, transparent)',
+    entries: [
+      { role: 'Software Support & Deployment', company: 'System Group',  startY: 2012, startM: 7,  endY: 2016, endM: 1  },
+      { role: 'Senior SQA Expert',             company: 'Digikala',      startY: 2016, startM: 1,  endY: 2017, endM: 8  },
+      { role: 'Senior SQA Expert',             company: 'Talos Digital', startY: 2017, startM: 8,  endY: 2020, endM: 3  },
+      { role: 'Software Engineer in Test',     company: 'Fortinet',      startY: 2021, startM: 4,  endY: 2022, endM: 8  },
+      { role: 'Senior Quality Engineer',       company: 'Dropbox',       startY: 2022, startM: 8,  endY: 2023, endM: 4  },
+      { role: 'Sr. Software Engineer in Test', company: 'Fortinet',      startY: 2023, startM: 4,  endY: 2026, endM: 4  },
+    ],
+  },
+  {
+    label: 'Academic',
+    color: 'var(--accent-2)',
+    colorBg: 'color-mix(in srgb, var(--accent-2) 18%, transparent)',
+    entries: [
+      { role: 'MS in Computer Science',    company: 'University of Saskatchewan', startY: 2018, startM: 9,  endY: 2020, endM: 12 },
+      { role: 'Sessional Faculty',         company: 'University Canada West',     startY: 2024, startM: 7,  endY: 2025, endM: 12 },
+    ],
+  },
+];
 ---
 
-<Layout title="Resume" description="Resume of Hamid Khodabandehloo — QA Engineer & SDET">
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 py-12">
-    <div class="flex items-start justify-between flex-wrap gap-4 mb-10">
-      <div>
-        <p class="font-mono text-sm mb-2" style="color: var(--accent)">
-          <span style="color: var(--accent-2)">$</span> open resume.pdf
-        </p>
-        <h1 class="text-3xl sm:text-4xl font-bold" style="color: var(--text)">Resume</h1>
-      </div>
-      <a
-        href="/resume.pdf"
-        download
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-md font-mono text-sm font-semibold border transition-colors hover:border-[var(--accent)]"
-        style="border-color: var(--border); color: var(--text-muted)"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-        </svg>
-        download PDF
-      </a>
-    </div>
+<Layout title="Timeline" description="Career timeline of Hamid Khodabandehloo — Senior Software Engineer in Test">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+    <p class="font-mono text-sm mb-2" style="color: var(--accent)">
+      <span style="color: var(--accent-2)">$</span> git log --career
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2" style="color: var(--text)">Career Timeline</h1>
+    <p class="text-sm mb-12 font-mono" style="color: var(--text-muted)">10+ years · Vancouver, BC</p>
 
-    <!-- Header -->
-    <div class="p-6 rounded-lg border mb-6" style="background: var(--surface); border-color: var(--border)">
-      <h2 class="text-xl font-bold font-mono mb-1" style="color: var(--text)">Hamid Khodabandehloo</h2>
-      <p class="font-mono text-sm mb-3" style="color: var(--accent)">QA Engineer & SDET</p>
-      <div class="flex flex-wrap gap-4 text-sm font-mono" style="color: var(--text-muted)">
-        <a href="mailto:your@email.com" class="hover:opacity-80 transition-opacity">your@email.com</a>
-        <a href="https://linkedin.com/in/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">linkedin</a>
-        <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="hover:opacity-80 transition-opacity">github</a>
-      </div>
-    </div>
+    <!-- Gantt chart -->
+    <div class="overflow-x-auto pb-4">
+      <div class="min-w-[640px]">
 
-    <!-- Summary -->
-    <section class="mb-8">
-      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
-        Summary
-      </h2>
-      <p class="text-sm leading-relaxed" style="color: var(--text-muted)">
-        QA Engineer and SDET with experience building automation frameworks from the ground up, integrating
-        tests into CI/CD pipelines, and driving quality culture across engineering teams. Proficient in
-        Selenium, Playwright, Pytest, and REST API testing.
-      </p>
-    </section>
-
-    <!-- Experience -->
-    <section class="mb-8">
-      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
-        Experience
-      </h2>
-
-      <div class="space-y-6">
-        {[
-          {
-            role: 'Senior SDET',
-            company: 'Company Name',
-            location: 'City, Country',
-            period: '2022 — Present',
-            points: [
-              'Led test automation strategy across 3 product teams, reducing manual testing by 70%',
-              'Built Playwright E2E framework covering 200+ user journey scenarios',
-              'Reduced regression cycle time by 60% through parallelization and smart test selection',
-              'Mentored 4 junior QA engineers; introduced shift-left testing practices',
-            ],
-          },
-          {
-            role: 'QA Engineer',
-            company: 'Company Name',
-            location: 'City, Country',
-            period: '2019 — 2022',
-            points: [
-              'Designed and implemented REST API test framework using Python + Pytest',
-              'Integrated automated test suites into Jenkins CI/CD pipelines',
-              'Developed test plans and maintained 500+ test cases in JIRA/Zephyr',
-              'Performed performance testing using JMeter for high-traffic endpoints',
-            ],
-          },
-        ].map(job => (
-          <div>
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-3">
-              <div>
-                <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">{job.role}</h3>
-                <p class="text-sm" style="color: var(--text-muted)">{job.company} · {job.location}</p>
-              </div>
-              <span class="text-xs font-mono" style="color: var(--accent)">{job.period}</span>
+        <!-- Year ruler -->
+        <div class="relative h-8 mb-1 ml-24">
+          {years.map(year => (
+            <div
+              class="absolute top-0 flex flex-col items-start"
+              style={`left: ${pct(year, 1)}`}
+            >
+              <span class="text-xs font-mono" style="color: var(--text-muted)">{year}</span>
+              <div class="w-px h-2 mt-0.5" style="background: var(--border)"></div>
             </div>
-            <ul class="space-y-1.5">
-              {job.points.map(point => (
-                <li class="text-sm flex gap-2" style="color: var(--text-muted)">
-                  <span class="shrink-0" style="color: var(--accent-2)">›</span>
-                  {point}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- Skills -->
-    <section class="mb-8">
-      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
-        Skills
-      </h2>
-
-      <div class="space-y-3">
-        {[
-          { label: 'Test Automation', value: 'Selenium, Playwright, Cypress, Appium' },
-          { label: 'Languages', value: 'Java, Python, TypeScript, JavaScript' },
-          { label: 'API Testing', value: 'REST Assured, Pytest, Postman, WireMock' },
-          { label: 'Performance', value: 'JMeter, k6, Gatling' },
-          { label: 'CI/CD & DevOps', value: 'GitHub Actions, Jenkins, Docker, Git' },
-          { label: 'Reporting', value: 'Allure, ExtentReports, HTML Reporter' },
-        ].map(skill => (
-          <div class="flex gap-4">
-            <span class="text-xs font-mono w-32 shrink-0 pt-0.5" style="color: var(--accent)">{skill.label}</span>
-            <span class="text-sm" style="color: var(--text-muted)">{skill.value}</span>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- Education -->
-    <section>
-      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-4 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
-        Education
-      </h2>
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-        <div>
-          <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">Bachelor's in Computer Science</h3>
-          <p class="text-sm" style="color: var(--text-muted)">University Name</p>
+          ))}
         </div>
-        <span class="text-xs font-mono" style="color: var(--accent)">Year</span>
+
+        <!-- Tracks -->
+        {tracks.map(track => (
+          <div class="flex items-start gap-4 mb-6">
+            <!-- Track label -->
+            <div class="w-20 shrink-0 pt-3 text-right">
+              <span class="text-xs font-mono uppercase tracking-wider" style={`color: ${track.color}`}>
+                {track.label}
+              </span>
+            </div>
+
+            <!-- Bars container -->
+            <div class="relative flex-1 h-14 rounded-md" style="background: var(--surface); border: 1px solid var(--border)">
+              {/* Grid lines for years */}
+              {years.map(year => (
+                <div
+                  class="absolute top-0 bottom-0 w-px"
+                  style={`left: ${pct(year, 1)}; background: var(--border); opacity: 0.5`}
+                ></div>
+              ))}
+
+              {/* Entry bars */}
+              {track.entries.map(entry => (
+                <div
+                  class="entry-bar absolute top-2 bottom-2 rounded cursor-pointer transition-all hover:top-1 hover:bottom-1 group"
+                  style={`
+                    left: ${pct(entry.startY, entry.startM)};
+                    width: ${span(entry.startY, entry.startM, entry.endY, entry.endM)};
+                    background: ${track.colorBg};
+                    border: 1px solid ${track.color};
+                  `}
+                  data-role={entry.role}
+                  data-company={entry.company}
+                >
+                  <div class="absolute inset-0 flex items-center px-2 overflow-hidden">
+                    <span class="text-xs font-mono truncate" style={`color: ${track.color}`}>
+                      {entry.company}
+                    </span>
+                  </div>
+
+                  {/* Tooltip */}
+                  <div
+                    class="entry-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <div class="px-3 py-2 rounded-md text-xs font-mono whitespace-nowrap shadow-lg" style="background: var(--surface); border: 1px solid var(--border)">
+                      <p class="font-semibold mb-0.5" style={`color: ${track.color}`}>{entry.role}</p>
+                      <p style="color: var(--text-muted)">{entry.company}</p>
+                      <p class="mt-1" style="color: var(--text-muted)">
+                        {entry.startY}/{String(entry.startM).padStart(2,'0')} →{' '}
+                        {entry.endY === 2026 && entry.endM === 4 ? 'present' : `${entry.endY}/${String(entry.endM).padStart(2,'0')}`}
+                      </p>
+                    </div>
+                    <div class="w-2 h-2 mx-auto -mt-1 rotate-45" style="background: var(--surface); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border)"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        <!-- "Now" marker -->
+        <div class="flex items-start gap-4">
+          <div class="w-20 shrink-0"></div>
+          <div class="relative flex-1">
+            <div class="absolute top-0 bottom-0 w-px" style={`left: ${pct(2026, 4)}; background: var(--accent); opacity: 0.6`}></div>
+          </div>
+        </div>
       </div>
-    </section>
+    </div>
+
+    <!-- Entry list -->
+    <div class="mt-16">
+      <h2 class="text-sm font-mono font-bold uppercase tracking-widest mb-6 pb-2 border-b" style="color: var(--accent); border-color: var(--border)">
+        // full history
+      </h2>
+
+      <div class="space-y-0">
+        {[...tracks[0].entries].reverse().map((entry, i, arr) => {
+          const durationMonths = toMonths(entry.endY, entry.endM) - toMonths(entry.startY, entry.startM);
+          const years = Math.floor(durationMonths / 12);
+          const months = durationMonths % 12;
+          const duration = years > 0
+            ? `${years}y${months > 0 ? ` ${months}m` : ''}`
+            : `${months}m`;
+          const isLast = i === arr.length - 1;
+          const endLabel = entry.endY === 2026 && entry.endM === 4
+            ? 'present'
+            : `${entry.endY}/${String(entry.endM).padStart(2,'0')}`;
+          return (
+            <div class="flex gap-4">
+              <!-- Spine -->
+              <div class="flex flex-col items-center w-6 shrink-0 pt-1">
+                <div class="w-2.5 h-2.5 rounded-full shrink-0" style="background: var(--accent); box-shadow: 0 0 6px var(--accent)"></div>
+                {!isLast && <div class="w-px flex-1 my-1" style="background: var(--border)"></div>}
+              </div>
+              <!-- Content -->
+              <div class={`pb-6 flex-1 ${isLast ? '' : ''}`}>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-0.5">
+                  <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">{entry.role}</h3>
+                  <span class="text-xs font-mono" style="color: var(--accent)">
+                    {entry.startY}/{String(entry.startM).padStart(2,'0')} → {endLabel}
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <p class="text-sm" style="color: var(--text-muted)">{entry.company}</p>
+                  <span class="text-xs font-mono px-1.5 py-0.5 rounded" style="background: var(--surface); color: var(--text-muted); border: 1px solid var(--border)">{duration}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+
+        <!-- Academic separator -->
+        <div class="flex gap-4 py-2">
+          <div class="w-6 shrink-0"></div>
+          <p class="text-xs font-mono uppercase tracking-widest" style="color: var(--accent-2)">// academic</p>
+        </div>
+
+        {[...tracks[1].entries].reverse().map((entry, i, arr) => {
+          const durationMonths = toMonths(entry.endY, entry.endM) - toMonths(entry.startY, entry.startM);
+          const yrs = Math.floor(durationMonths / 12);
+          const mos = durationMonths % 12;
+          const duration = yrs > 0 ? `${yrs}y${mos > 0 ? ` ${mos}m` : ''}` : `${mos}m`;
+          const isLast = i === arr.length - 1;
+          return (
+            <div class="flex gap-4">
+              <div class="flex flex-col items-center w-6 shrink-0 pt-1">
+                <div class="w-2.5 h-2.5 rounded-full shrink-0" style="background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2)"></div>
+                {!isLast && <div class="w-px flex-1 my-1" style="background: var(--border)"></div>}
+              </div>
+              <div class="pb-6 flex-1">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-0.5">
+                  <h3 class="font-mono font-semibold text-sm" style="color: var(--text)">{entry.role}</h3>
+                  <span class="text-xs font-mono" style="color: var(--accent-2)">
+                    {entry.startY}/{String(entry.startM).padStart(2,'0')} → {entry.endY}/{String(entry.endM).padStart(2,'0')}
+                  </span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <p class="text-sm" style="color: var(--text-muted)">{entry.company}</p>
+                  <span class="text-xs font-mono px-1.5 py-0.5 rounded" style="background: var(--surface); color: var(--text-muted); border: 1px solid var(--border)">{duration}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   </div>
 </Layout>

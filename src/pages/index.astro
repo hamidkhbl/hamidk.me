@@ -53,7 +53,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     <div class="max-w-5xl mx-auto px-4 sm:px-6 py-6">
       <div class="flex flex-wrap gap-x-8 gap-y-2 items-center">
         <span class="text-xs font-mono uppercase tracking-widest" style="color: var(--text-muted)">stack</span>
-        {['Selenium', 'Playwright', 'Cypress', 'Pytest', 'Java', 'Python', 'TypeScript', 'CI/CD', 'Docker', 'REST API'].map(skill => (
+        {['Python', 'Java', 'C#', 'Selenium', 'Playwright', 'PyTest', 'RestAssured', 'Postman', 'Burp Suite', 'JMeter', 'Jenkins', 'Docker', 'SQL', 'Kafka', 'Graylog'].map(skill => (
           <span class="text-sm font-mono" style="color: var(--text-muted)">{skill}</span>
         ))}
       </div>
