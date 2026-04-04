@@ -16,9 +16,35 @@ const tree = buildTree(posts);
 ---
 
 <nav class="blog-tree" aria-label="Blog navigation">
-  <p class="text-xs font-mono uppercase tracking-widest mb-3 px-2" style="color: var(--text-muted)">
-    Topics
-  </p>
+  <div class="flex items-center justify-between mb-3 px-2">
+    <p class="text-xs font-mono uppercase tracking-widest" style="color: var(--text-muted)">Topics</p>
+    <div class="flex items-center gap-1 rounded-md p-0.5" style="background: var(--surface-2)">
+      <button
+        id="tree-expand-all"
+        title="Expand all"
+        aria-label="Expand all"
+        class="flex items-center justify-center w-6 h-6 rounded transition-colors hover:bg-[var(--surface)]"
+        style="color: var(--text-muted)"
+      >
+        <!-- unfold / expand icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l4-4 4 4"/><path d="M7 5v14"/><path d="M21 15l-4 4-4-4"/><path d="M17 19V5"/>
+        </svg>
+      </button>
+      <button
+        id="tree-collapse-all"
+        title="Collapse all"
+        aria-label="Collapse all"
+        class="flex items-center justify-center w-6 h-6 rounded transition-colors hover:bg-[var(--surface)]"
+        style="color: var(--text-muted)"
+      >
+        <!-- fold / collapse icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 5l4 4 4-4"/><path d="M7 9V5"/><path d="M21 19l-4-4-4 4"/><path d="M17 15v4"/>
+        </svg>
+      </button>
+    </div>
+  </div>
 
   <ul class="space-y-0.5">
     {Object.values(tree).map(node => (
@@ -28,17 +54,88 @@ const tree = buildTree(posts);
 </nav>
 
 <script>
-  // Expand/collapse on click
+  const STORAGE_KEY = 'blog-tree-open';
+
+  function getOpenPaths(): Set<string> {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  }
+
+  function saveOpenPaths(paths: Set<string>) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...paths]));
+  }
+
+  function setNode(container: HTMLElement, chevron: SVGElement, btn: HTMLButtonElement, open: boolean) {
+    container.classList.toggle('hidden', !open);
+    chevron.classList.toggle('rotate-90', open);
+    btn.setAttribute('aria-expanded', String(open));
+  }
+
+  // On load: merge server-rendered open state with persisted state
+  const openPaths = getOpenPaths();
+
   document.querySelectorAll<HTMLButtonElement>('.tree-category').forEach(btn => {
+    const targetId = btn.dataset.target!;
+    const container = document.getElementById(targetId)!;
+    const chevron = btn.querySelector<SVGElement>('.tree-chevron')!;
+    const nodePath = btn.closest<HTMLElement>('.tree-node')?.dataset.path ?? '';
+
+    // If we have a saved state for this node, apply it
+    // (server may have opened ancestors of current post — keep those open too)
+    const serverOpen = !container.classList.contains('hidden');
+    const savedOpen = openPaths.has(nodePath);
+    const shouldOpen = serverOpen || savedOpen;
+
+    if (shouldOpen !== serverOpen) {
+      setNode(container, chevron, btn, shouldOpen);
+    }
+
+    // If server opened it (it's an ancestor of current post), persist that
+    if (serverOpen) {
+      openPaths.add(nodePath);
+      saveOpenPaths(openPaths);
+    }
+
     btn.addEventListener('click', () => {
+      const isOpen = !container.classList.contains('hidden');
+      setNode(container, chevron, btn, !isOpen);
+
+      if (!isOpen) {
+        openPaths.add(nodePath);
+      } else {
+        openPaths.delete(nodePath);
+      }
+      saveOpenPaths(openPaths);
+    });
+  });
+
+  // Expand all
+  document.getElementById('tree-expand-all')?.addEventListener('click', () => {
+    document.querySelectorAll<HTMLButtonElement>('.tree-category').forEach(btn => {
       const targetId = btn.dataset.target!;
       const container = document.getElementById(targetId)!;
       const chevron = btn.querySelector<SVGElement>('.tree-chevron')!;
-      const isOpen = !container.classList.contains('hidden');
-
-      container.classList.toggle('hidden', isOpen);
-      chevron.classList.toggle('rotate-90', !isOpen);
-      btn.setAttribute('aria-expanded', String(!isOpen));
+      const nodePath = btn.closest<HTMLElement>('.tree-node')?.dataset.path ?? '';
+      setNode(container, chevron, btn, true);
+      openPaths.add(nodePath);
     });
+    saveOpenPaths(openPaths);
+  });
+
+  // Collapse all
+  document.getElementById('tree-collapse-all')?.addEventListener('click', () => {
+    document.querySelectorAll<HTMLButtonElement>('.tree-category').forEach(btn => {
+      const targetId = btn.dataset.target!;
+      const container = document.getElementById(targetId)!;
+      const chevron = btn.querySelector<SVGElement>('.tree-chevron')!;
+      const nodePath = btn.closest<HTMLElement>('.tree-node')?.dataset.path ?? '';
+      setNode(container, chevron, btn, false);
+      openPaths.delete(nodePath);
+    });
+    saveOpenPaths(openPaths);
   });
 </script>
