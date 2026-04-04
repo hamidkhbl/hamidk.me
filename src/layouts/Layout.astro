@@ -29,6 +29,21 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
     <meta property="og:description" content={description} />
     {image && <meta property="og:image" content={image} />}
 
+    <!-- Structured data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Hamid Khodabandehloo",
+      "url": "https://hamidk.dev",
+      "jobTitle": "Senior Software Engineer in Test",
+      "worksFor": { "@type": "Organization", "name": "Fortinet" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Vancouver", "addressRegion": "BC", "addressCountry": "CA" },
+      "sameAs": [
+        "https://linkedin.com/in/hamidkhbl",
+        "https://github.com/hamidkhbl"
+      ]
+    })} />
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
