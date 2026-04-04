@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import { buildTree } from '../lib/blogTree';
+import TreeNode from './TreeNode.astro';
+
+interface Props {
+  currentPostId?: string;
+}
+
+const { currentPostId } = Astro.props;
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+const tree = buildTree(posts);
+---
+
+<nav class="blog-tree" aria-label="Blog navigation">
+  <p class="text-xs font-mono uppercase tracking-widest mb-3 px-2" style="color: var(--text-muted)">
+    Topics
+  </p>
+
+  <ul class="space-y-0.5">
+    {Object.values(tree).map(node => (
+      <TreeNode node={node} currentPostId={currentPostId} depth={0} />
+    ))}
+  </ul>
+</nav>
+
+<script>
+  // Expand/collapse on click
+  document.querySelectorAll<HTMLButtonElement>('.tree-category').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.dataset.target!;
+      const container = document.getElementById(targetId)!;
+      const chevron = btn.querySelector<SVGElement>('.tree-chevron')!;
+      const isOpen = !container.classList.contains('hidden');
+
+      container.classList.toggle('hidden', isOpen);
+      chevron.classList.toggle('rotate-90', !isOpen);
+      btn.setAttribute('aria-expanded', String(!isOpen));
+    });
+  });
+</script>

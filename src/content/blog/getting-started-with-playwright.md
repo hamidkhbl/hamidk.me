@@ -3,6 +3,7 @@ title: "Getting Started with Playwright for E2E Testing"
 description: "A practical guide to setting up Playwright, writing your first tests, and integrating with CI/CD pipelines."
 pubDate: 2024-03-15
 tags: ["playwright", "typescript", "e2e", "automation"]
+category: "automation/playwright"
 draft: false
 ---
 

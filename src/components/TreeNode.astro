@@ -1,0 +1,101 @@
+---
+import type { TreeNode } from '../lib/blogTree';
+import { formatNodeName } from '../lib/blogTree';
+import TreeNodeComponent from './TreeNode.astro';
+
+interface Props {
+  node: TreeNode;
+  currentPostId?: string;
+  depth?: number;
+  defaultOpen?: boolean;
+}
+
+const { node, currentPostId, depth = 0, defaultOpen = false } = Astro.props;
+
+const hasChildren = Object.keys(node.children).length > 0;
+const hasPosts = node.posts.length > 0;
+const isAncestor = currentPostId
+  ? node.posts.some(p => p.id === currentPostId) ||
+    Object.values(node.children).some(child =>
+      JSON.stringify(child).includes(currentPostId)
+    )
+  : false;
+
+const nodeId = `tree-node-${node.path.replace(/\//g, '-')}`;
+const open = isAncestor || defaultOpen || depth === 0;
+---
+
+<li class="tree-node" data-path={node.path}>
+  <!-- Category label (clickable to expand/collapse) -->
+  <button
+    class="tree-category flex items-center gap-1.5 w-full text-left py-1 px-2 rounded-md transition-colors hover:bg-[var(--surface-2)] group"
+    data-target={nodeId}
+    aria-expanded={open ? "true" : "false"}
+  >
+    <!-- Chevron -->
+    <svg
+      class={`tree-chevron shrink-0 transition-transform duration-150 ${open ? 'rotate-90' : ''}`}
+      xmlns="http://www.w3.org/2000/svg"
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      style="color: var(--text-muted)"
+    >
+      <path d="m9 18 6-6-6-6"/>
+    </svg>
+    <span
+      class="text-xs font-mono font-semibold uppercase tracking-wider truncate"
+      style={`color: ${isAncestor ? 'var(--accent)' : 'var(--text-muted)'}`}
+    >
+      {formatNodeName(node.name)}
+    </span>
+  </button>
+
+  <!-- Children container -->
+  <div
+    id={nodeId}
+    class={`tree-children overflow-hidden transition-all duration-200 ${open ? '' : 'hidden'}`}
+    style={`padding-left: ${depth === 0 ? 1 : 1.25}rem`}
+  >
+    <!-- Posts in this node -->
+    {hasPosts && (
+      <ul class="space-y-0.5 mt-0.5">
+        {node.posts.map(post => {
+          const isActive = post.id === currentPostId;
+          return (
+            <li>
+              <a
+                href={`/blog/${post.id}`}
+                class="flex items-center gap-1.5 py-1 px-2 rounded-md text-xs font-mono transition-colors hover:bg-[var(--surface-2)] leading-snug"
+                style={isActive
+                  ? 'color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent)'
+                  : 'color: var(--text-muted)'}
+              >
+                <span class="shrink-0 opacity-40" style="color: var(--accent)">›</span>
+                <span class="truncate">{post.title}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+
+    <!-- Nested subcategories -->
+    {hasChildren && (
+      <ul class="space-y-0.5 mt-0.5">
+        {Object.values(node.children).map(child => (
+          <TreeNodeComponent
+            node={child}
+            currentPostId={currentPostId}
+            depth={depth + 1}
+          />
+        ))}
+      </ul>
+    )}
+  </div>
+</li>

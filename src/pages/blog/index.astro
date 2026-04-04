@@ -1,11 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import BlogTree from '../../components/BlogTree.astro';
 import { getCollection } from 'astro:content';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-
-const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
 ---
 
 <Layout title="Blog" description="Writing about QA engineering, test automation, and software quality by Hamid Khodabandehloo">
@@ -15,66 +14,26 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
     </p>
     <h1 class="text-3xl sm:text-4xl font-bold mb-10" style="color: var(--text)">Blog</h1>
 
-    <div class="flex gap-10">
-      <!-- Sidebar -->
-      <aside class="hidden md:block w-52 shrink-0">
-        <div class="sticky top-20">
-          <p class="text-xs font-mono uppercase tracking-widest mb-4" style="color: var(--text-muted)">Topics</p>
-          <ul class="space-y-1">
-            <li>
-              <button
-                data-tag="all"
-                class="sidebar-tag w-full text-left text-sm font-mono px-3 py-1.5 rounded-md transition-colors"
-                style="color: var(--text-muted)"
-              >
-                all posts
-                <span class="ml-1 text-xs" style="color: var(--text-muted)">({posts.length})</span>
-              </button>
-            </li>
-            {allTags.map(tag => {
-              const count = posts.filter(p => p.data.tags.includes(tag)).length;
-              return (
-                <li>
-                  <button
-                    data-tag={tag}
-                    class="sidebar-tag w-full text-left text-sm font-mono px-3 py-1.5 rounded-md transition-colors"
-                    style="color: var(--text-muted)"
-                  >
-                    #{tag}
-                    <span class="ml-1 text-xs" style="color: var(--text-muted)">({count})</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+    <div class="flex gap-8">
+      <!-- Tree sidebar -->
+      <aside class="hidden md:block w-56 shrink-0">
+        <div class="sticky top-20 p-3 rounded-lg border" style="background: var(--surface); border-color: var(--border)">
+          <BlogTree />
         </div>
       </aside>
 
       <!-- Post list -->
       <div class="flex-1 min-w-0">
-        <!-- Mobile tag strip -->
-        <div class="flex flex-wrap gap-2 mb-6 md:hidden">
-          <button data-tag="all" class="sidebar-tag text-xs font-mono px-3 py-1.5 rounded-full border transition-colors" style="border-color: var(--border); color: var(--text-muted)">
-            all
-          </button>
-          {allTags.map(tag => (
-            <button data-tag={tag} class="sidebar-tag text-xs font-mono px-3 py-1.5 rounded-full border transition-colors" style="border-color: var(--border); color: var(--text-muted)">
-              #{tag}
-            </button>
-          ))}
-        </div>
-
         {posts.length === 0 ? (
           <div class="py-20">
             <p class="font-mono text-sm" style="color: var(--text-muted)">// no posts yet — check back soon</p>
           </div>
         ) : (
-          <div class="space-y-4" id="post-list">
+          <div class="space-y-4">
             {posts.map(post => (
               <a
                 href={`/blog/${post.id}`}
-                data-tags={post.data.tags.join(',')}
-                class="post-card group block p-5 rounded-lg border transition-colors hover:border-[var(--accent)]"
+                class="group block p-5 rounded-lg border transition-colors hover:border-[var(--accent)]"
                 style="background: var(--surface); border-color: var(--border)"
               >
                 <div class="flex items-start justify-between gap-4 mb-2">
@@ -84,6 +43,11 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
                   <time class="text-xs font-mono shrink-0 mt-1" style="color: var(--text-muted)">
                     {post.data.pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                   </time>
+                </div>
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="text-xs font-mono px-1.5 py-0.5 rounded" style="background: var(--surface-2); color: var(--accent)">
+                    {post.data.category.replace(/\//g, ' / ').replace(/-/g, ' ')}
+                  </span>
                 </div>
                 <p class="text-sm leading-relaxed mb-3" style="color: var(--text-muted)">{post.data.description}</p>
                 <div class="flex flex-wrap gap-2">
@@ -95,49 +59,7 @@ const allTags = [...new Set(posts.flatMap(p => p.data.tags))].sort();
             ))}
           </div>
         )}
-
-        <p id="no-results" class="hidden font-mono text-sm py-10" style="color: var(--text-muted)">
-          // no posts found for this topic
-        </p>
       </div>
     </div>
   </div>
 </Layout>
-
-<style>
-  .sidebar-tag.active {
-    background: color-mix(in srgb, var(--accent) 12%, transparent);
-    color: var(--accent);
-  }
-</style>
-
-<script>
-  const tags = document.querySelectorAll<HTMLButtonElement>('.sidebar-tag');
-  const cards = document.querySelectorAll<HTMLElement>('.post-card');
-  const noResults = document.getElementById('no-results')!;
-
-  function activate(selected: string) {
-    // Update button styles
-    tags.forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.tag === selected);
-    });
-
-    // Filter cards
-    let visible = 0;
-    cards.forEach(card => {
-      const cardTags = card.dataset.tags?.split(',') ?? [];
-      const show = selected === 'all' || cardTags.includes(selected);
-      card.style.display = show ? '' : 'none';
-      if (show) visible++;
-    });
-
-    noResults.classList.toggle('hidden', visible > 0);
-  }
-
-  // Set "all" active on load
-  activate('all');
-
-  tags.forEach(btn => {
-    btn.addEventListener('click', () => activate(btn.dataset.tag ?? 'all'));
-  });
-</script>
