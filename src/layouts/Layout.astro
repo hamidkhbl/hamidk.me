@@ -5,9 +5,10 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  noindex?: boolean;
 }
 
-const { title, description = "QA Engineer & SDET — Hamid Khodabandehloo", image } = Astro.props;
+const { title, description = "QA Engineer & SDET — Hamid Khodabandehloo", image, noindex = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin);
 ---
 
@@ -21,6 +22,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin)
 
     <title>{title} | Hamid Khodabandehloo</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

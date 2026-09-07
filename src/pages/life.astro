@@ -1,0 +1,271 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const BIRTH_DATE = new Date(Date.UTC(1988, 1, 10)); // Feb 10, 1988
+const YEARS = 90;
+const WEEKS_PER_YEAR = 52;
+const TOTAL_WEEKS = YEARS * WEEKS_PER_YEAR;
+const DAY_MS = 24 * 60 * 60 * 1000;
+const now = Date.now();
+
+// Each row spans exactly one calendar year, birthday-to-birthday (365 or 366
+// days), split into 52 weeks — a couple of weeks in the row absorb the extra
+// day(s) so the next row still starts exactly on the real birthday.
+function addYears(date: Date, years: number) {
+  const d = new Date(date.getTime());
+  d.setUTCFullYear(d.getUTCFullYear() + years);
+  return d;
+}
+
+const rows = Array.from({ length: YEARS }, (_, year) => {
+  const yearStart = addYears(BIRTH_DATE, year).getTime();
+  const yearEnd = addYears(BIRTH_DATE, year + 1).getTime();
+  const totalDays = Math.round((yearEnd - yearStart) / DAY_MS);
+  const baseDays = Math.floor(totalDays / WEEKS_PER_YEAR);
+  const extraDays = totalDays - baseDays * WEEKS_PER_YEAR;
+
+  let cursor = yearStart;
+  const weeks = Array.from({ length: WEEKS_PER_YEAR }, (_, week) => {
+    const days = baseDays + (week >= WEEKS_PER_YEAR - extraDays ? 1 : 0);
+    const start = cursor;
+    const end = start + days * DAY_MS;
+    cursor = end;
+    const status = end <= now ? 'lived' : start <= now && now < end ? 'current' : 'future';
+    return { start, status };
+  });
+
+  return { year, weeks };
+});
+
+const weeksLived = rows.flatMap(r => r.weeks).filter(w => w.status === 'lived').length;
+const percentLived = ((weeksLived / TOTAL_WEEKS) * 100).toFixed(1);
+const weeksLeft = TOTAL_WEEKS - weeksLived;
+---
+
+<Layout title="Life in Weeks" description="A week-by-week visualization of a life." noindex>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+    <p class="font-mono text-sm mb-2" style="color: var(--accent)">
+      <span style="color: var(--accent-2)">$</span> cat life.md
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-2" style="color: var(--text)">Life in Weeks</h1>
+    <p class="text-sm font-mono mb-10" style="color: var(--text-muted)">
+      born Feb 10, 1988 · one box per week · {YEARS} years
+    </p>
+
+    <div class="grid grid-cols-3 gap-4 mb-10">
+      <div class="p-4 rounded-lg border text-center" style="background: var(--surface); border-color: var(--border)">
+        <p class="text-2xl font-bold font-mono" style="color: var(--accent)">{weeksLived.toLocaleString()}</p>
+        <p class="text-xs font-mono mt-1" style="color: var(--text-muted)">weeks lived</p>
+      </div>
+      <div class="p-4 rounded-lg border text-center" style="background: var(--surface); border-color: var(--border)">
+        <p class="text-2xl font-bold font-mono" style="color: var(--accent-2)">{percentLived}%</p>
+        <p class="text-xs font-mono mt-1" style="color: var(--text-muted)">of {YEARS} years</p>
+      </div>
+      <div class="p-4 rounded-lg border text-center" style="background: var(--surface); border-color: var(--border)">
+        <p class="text-2xl font-bold font-mono" style="color: var(--text)">{weeksLeft.toLocaleString()}</p>
+        <p class="text-xs font-mono mt-1" style="color: var(--text-muted)">weeks ahead</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-5 mb-8 text-xs font-mono" style="color: var(--text-muted)">
+      <span class="flex items-center gap-1.5"><span class="legend-swatch wk-lived"></span> lived</span>
+      <span class="flex items-center gap-1.5"><span class="legend-swatch wk-current"></span> this week</span>
+      <span class="flex items-center gap-1.5"><span class="legend-swatch wk-future"></span> ahead</span>
+    </div>
+
+    <div class="overflow-x-auto pb-4">
+      <div id="life-grid" class="inline-block">
+        {rows.map(row => (
+          <div class={`flex items-center leading-none wk-year-row ${row.year % 10 === 0 && row.year !== 0 ? 'wk-decade' : ''}`}>
+            <div class="wk-label">
+              {row.year % 5 === 0 && (
+                <>
+                  <span class={row.year % 10 === 0 ? 'wk-label-age wk-label-age-decade' : 'wk-label-age'}>{row.year}</span>
+                  <span class="wk-label-year">{BIRTH_DATE.getUTCFullYear() + row.year}</span>
+                </>
+              )}
+            </div>
+            <div class="wk-row">
+              {row.weeks.map(cell => (
+                <div class={`week-cell wk-${cell.status}`} data-t={cell.start} data-a={row.year}></div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div id="wk-tooltip" class="wk-tooltip hidden"></div>
+
+    <p class="text-xs font-mono mt-4" style="color: var(--text-muted)">
+      filled = lived, glowing = this week, hollow = ahead. hover a box for its date.
+    </p>
+  </div>
+</Layout>
+
+<style>
+  #life-grid {
+    padding-top: 0.375rem;
+  }
+  .wk-decade {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border);
+  }
+  .wk-year-row {
+    gap: 0.75rem;
+  }
+  .wk-label {
+    width: 3.25rem;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .wk-label-age {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--text-muted);
+  }
+  .wk-label-age-decade {
+    color: var(--accent);
+  }
+  .wk-label-year {
+    font-family: var(--font-mono);
+    font-size: 0.55rem;
+    color: var(--text-muted);
+    opacity: 0.6;
+  }
+  .wk-row {
+    display: grid;
+    grid-template-columns: repeat(52, var(--wk-size, 16px));
+    gap: var(--wk-gap, 3px);
+    margin-bottom: var(--wk-gap, 3px);
+  }
+  .week-cell {
+    width: var(--wk-size, 16px);
+    height: var(--wk-size, 16px);
+    border-radius: 2px;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+  }
+  .week-cell:hover {
+    transform: scale(1.35);
+    z-index: 1;
+    position: relative;
+  }
+  .wk-lived {
+    background: var(--accent);
+  }
+  .wk-lived:hover {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 50%, transparent);
+  }
+  .wk-current {
+    background: var(--accent-2);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-2) 40%, transparent);
+    animation: wk-pulse 2s ease-in-out infinite;
+  }
+  .wk-future {
+    background: transparent;
+    border: 1px solid var(--border);
+  }
+  .wk-future:hover {
+    border-color: var(--accent);
+  }
+  .legend-swatch {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+  }
+  .wk-tooltip {
+    position: fixed;
+    z-index: 100;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    white-space: nowrap;
+  }
+  @keyframes wk-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  @media (max-width: 1100px) {
+    .wk-row {
+      --wk-size: 11px;
+      --wk-gap: 2px;
+    }
+    .wk-year-row {
+      gap: 0.5rem;
+    }
+    .wk-label {
+      width: 2rem;
+    }
+  }
+  @media (max-width: 800px) {
+    .wk-row {
+      --wk-size: 8px;
+      --wk-gap: 1px;
+    }
+    .wk-year-row {
+      gap: 0.375rem;
+    }
+    .wk-label {
+      width: 1.75rem;
+    }
+  }
+  @media (max-width: 640px) {
+    .wk-row {
+      --wk-size: 5px;
+    }
+    .wk-label {
+      width: 1.5rem;
+    }
+    .wk-label-year {
+      display: none;
+    }
+  }
+  @media (max-width: 380px) {
+    .wk-row {
+      --wk-size: 4px;
+    }
+    .wk-year-row {
+      gap: 0.25rem;
+    }
+    .wk-label {
+      width: 1.25rem;
+    }
+  }
+</style>
+
+<script>
+  const grid = document.getElementById('life-grid');
+  const tooltip = document.getElementById('wk-tooltip');
+
+  if (grid && tooltip) {
+    grid.addEventListener('mouseover', (e) => {
+      const cell = (e.target as HTMLElement).closest('.week-cell') as HTMLElement | null;
+      if (!cell) return;
+      const start = new Date(Number(cell.dataset.t));
+      const age = cell.dataset.a;
+      const label = start.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      tooltip.textContent = `${label} · age ${age}`;
+      tooltip.classList.remove('hidden');
+    });
+
+    grid.addEventListener('mousemove', (e: MouseEvent) => {
+      tooltip.style.left = `${e.clientX + 14}px`;
+      tooltip.style.top = `${e.clientY + 14}px`;
+    });
+
+    grid.addEventListener('mouseleave', () => {
+      tooltip.classList.add('hidden');
+    });
+  }
+</script>
